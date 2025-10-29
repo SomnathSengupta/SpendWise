@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>SpendWise — Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/>
+    <style>
+        :root {
+          --primary-color: #00796b;
+          --accent-color: #4db6ac;
+          --header-bg: #1b262c;
+          --light-bg: #f9fafb;
+          --white: #ffffff;
+          --shadow: 0 4px 20px rgba(0,0,0,0.1);
+          --font: 'Poppins', 'Segoe UI', sans-serif;
+          --border-color: #e0e0e0;
+          --error-color: #dc3545;
+          --success-color: #28a745;
+        }
+        *{box-sizing:border-box;margin:0;padding:0;font-family:var(--font);}
+        body{display:flex;flex-direction:column;min-height:100vh;background:var(--light-bg);color:#222;}
+
+        /* ================= HEADER ================= */
+        header {
+          background: var(--header-bg);
+          color: var(--white);
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 18px 70px;
+          box-shadow: var(--shadow);
+          position: sticky;
+          top: 0;
+          z-index: 1000;
+        }
+        header h1 { font-size:1.6rem; font-weight:700; display:flex;align-items:center; gap:.6rem; }
+        .header-right { display:flex; align-items:center; gap:20px; }
+        .inhand-box {
+          background: rgba(255,255,255,0.08);
+          color: #fff;
+          padding:8px 14px;
+          border-radius:9px;
+          font-weight:700;
+          display:flex;
+          align-items:center;
+          gap:8px;
+        }
+        .logout-btn {
+          background: #e63946;
+          color: white;
+          border: none;
+          padding: 8px 14px;
+          border-radius: 6px;
+          cursor: pointer;
+          transition: background-color 0.2s;
+        }
+        .logout-btn:hover { background:#d62839; }
+
+        /* ================= LAYOUT ================= */
+        .container {
+          width: 92%;
+          max-width: 1200px;
+          margin: 28px auto;
+          display: grid;
+          grid-template-columns: 260px 1fr;
+          gap: 24px;
+          align-items: start;
+        }
+
+        /* ================= SIDEBAR ================= */
+        aside.sidebar {
+          background: var(--white);
+          border-radius: 10px;
+          padding: 20px;
+          box-shadow: var(--shadow);
+          height: fit-content;
+        }
+        .nav-btn {
+          display:flex;
+          align-items:center;
+          gap:12px;
+          width:100%;
+          padding:12px 14px;
+          margin-bottom:8px;
+          border-radius:8px;
+          background:transparent;
+          border:none;
+          cursor:pointer;
+          font-weight:600;
+          color:#234;
+          transition:all .18s;
+        }
+        .nav-btn i { color: var(--primary-color); width:20px; text-align:center; }
+        .nav-btn:hover { background: #f0f4f7; }
+        .nav-btn.active { background-color: var(--primary-color); color:white; box-shadow: 0 4px 8px rgba(0, 121, 107, 0.2); }
+        .nav-btn.active i{ color:white; }
+
+        /* ================= MAIN CONTENT ================= */
+        main.content {
+          background: var(--white);
+          border-radius: 12px;
+          padding: 30px;
+          box-shadow: var(--shadow);
+          min-height: 60vh;
+        }
+
+        .content-header { display:flex; justify-content:space-between; align-items:flex-end; gap:12px; margin-bottom:20px; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; }
+        .content-title { font-size:1.8rem; font-weight:700; color:var(--primary-color); }
+        .small-muted { color:#666; font-size:0.95rem; }
+
+        /* card */
+        .card { background: var(--light-bg); padding:20px; border-radius:10px; margin-top:15px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); }
+
+        /* form elements */
+        .form-row { display:flex; gap:20px; margin-top:15px; }
+        .form-row .col { flex:1; }
+        .form-group-label { display: block; margin-bottom: 6px; font-weight: 500; color: #555; font-size: 0.95rem; }
+        input[type="text"], input[type="number"], input[type="date"], select {
+          width:100%; padding:12px 15px; border:1px solid var(--border-color); border-radius:8px; font-size:1rem;
+        }
+        input:focus, select:focus { border-color: var(--accent-color); outline: none; box-shadow: 0 0 0 3px rgba(77, 182, 172, 0.2); }
+
+        button.primary {
+          background-color: var(--primary-color);
+          color:#fff; border:none; padding:12px 20px; border-radius:8px; cursor:pointer; font-weight:700;
+          transition: background-color 0.2s, transform 0.1s;
+        }
+        button.primary:hover { background: #00695c; transform: translateY(-1px); }
+
+        button.ghost {
+            background:transparent; color:var(--primary-color); border:1px solid var(--primary-color);
+            padding:10px 18px; border-radius:8px; font-weight: 600;
+            transition: all 0.2s;
+        }
+        button.ghost:hover { background: var(--primary-color); color: var(--white); }
+
+
+        /* expenses table */
+        table { width:100%; border-collapse:collapse; margin-top:20px; }
+        table th, table td { padding:14px 15px; border-bottom:1px solid #eee; text-align:left; font-size:0.95rem; }
+        table th { background:#e0f2f1; color:var(--primary-color); font-weight:700; text-transform: uppercase; font-size: 0.9rem;}
+        table tbody tr:last-child td { border-bottom: none; }
+        table tbody tr:hover { background: #f0f4f7; }
+
+        /* responsive */
+        @media (max-width: 900px) {
+          .container { grid-template-columns: 1fr; padding:15px; gap: 20px; }
+          header { padding:15px; }
+          header h1 { font-size: 1.4rem; }
+          .header-right { gap: 10px; }
+          .inhand-box { padding: 8px 12px; font-size: 0.95rem; }
+          header nav { display:none; }
+          .form-row { flex-direction: column; gap: 0; }
+          aside.sidebar { padding: 15px; }
+        }
+
+        /* small message */
+        #message { margin-top:20px; padding:15px; border-radius:8px; display:none; font-weight:600; }
+        #message.success { background:#e6ffef; color:var(--success-color); border:1px solid var(--success-color); }
+        #message.error { background:#ffecec; color:var(--error-color); border:1px solid var(--error-color); }
+
+        /* ================= FOOTER ================= */
+        footer {
+          margin-top: auto;
+          background: linear-gradient(to right, #263238, #1b262c);
+          color: #cfd8dc;
+          padding: 60px 0 20px;
+        }
+
+        .footer-container {
+          max-width: 1100px;
+          margin: 0 auto;
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: space-between;
+          gap: 40px;
+          padding: 0 20px;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+          padding-bottom: 30px;
+        }
+
+        .footer-column h3 {
+          color: var(--accent-color);
+          margin-bottom: 15px;
+        }
+
+        .footer-column a {
+          display: block;
+          color: #b0bec5;
+          text-decoration: none;
+          margin-bottom: 8px;
+          transition: 0.3s;
+        }
+
+        .footer-column a:hover {
+          color: var(--accent-color);
+        }
+
+        .footer-bottom {
+          text-align: center;
+          padding-top: 15px;
+          font-size: 0.9rem;
+          opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1><i class="fas fa-coins"></i> SpendWise</h1>
+
+    <div class="header-right">
+        <div id="inhandBox" class="inhand-box">💰 Loading...</div>
+        <button class="logout-btn" id="logoutBtn">Logout</button>
+    </div>
+</header>
+
+<div class="container">
+    <aside class="sidebar">
+        <button class="nav-btn active" data-section="addExpense"><i class="fas fa-plus-circle"></i> Add Expense</button>
+        <button class="nav-btn" data-section="seeAll"><i class="fas fa-list"></i> View Expenses</button>
+        <button class="nav-btn" data-section="updateInhand"><i class="fas fa-wallet"></i> Update In-hand</button>
+        <button class="nav-btn" data-section="generateReport"><i class="fas fa-download"></i> Download Report</button>
+    </aside>
+
+    <main class="content">
+        <div class="content-header">
+            <div>
+                <div class="content-title" id="welcomeTitle">Welcome —</div>
+                <div class="small-muted" id="userEmail"></div>
+            </div>
+        </div>
+
+        <div id="message"></div>
+
+        <section id="addExpense" class="section active">
+            <h3 class="content-title" style="font-size: 1.5rem; color:#222;">Add New Transaction</h3>
+            <div class="card">
+                <div class="form-row">
+                    <div class="col">
+                        <label class="form-group-label">Purpose</label>
+                        <input id="purpose" type="text" placeholder="e.g., Groceries" required/>
+                    </div>
+                    <div class="col">
+                        <label class="form-group-label">Amount (₹)</label>
+                        <input id="amount" type="number" placeholder="e.g., 1200.50" required/>
+                    </div>
+                </div>
+
+                <div style="margin-top:20px;display:flex;gap:15px;">
+                    <button class="primary" id="addExpenseBtn">Add Expense</button>
+                    <button class="ghost" id="resetAdd">Clear Form</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="seeAll" class="section" style="display:none;">
+            <h3 class="content-title" style="font-size: 1.5rem; color:#222;">View Expenses</h3>
+            <div class="card">
+                <div class="filter-controls" style="display:flex; gap: 15px; align-items: flex-end; margin-bottom: 20px; flex-wrap: wrap; border-bottom: 1px solid var(--border-color); padding-bottom: 20px;">
+                    <div>
+                        <label for="monthFilter" class="form-group-label">Month</label>
+                        <select id="monthFilter"></select>
+                    </div>
+                    <div>
+                        <label for="yearFilter" class="form-group-label">Year</label>
+                        <select id="yearFilter"></select>
+                    </div>
+                    <div style="display:flex; gap: 10px; margin-left: 5px;">
+                        <button class="primary" id="applyFilterBtn" style="padding: 11px 18px;">Filter</button>
+                        <button class="ghost" id="showAllBtn">Show All</button>
+                    </div>
+                </div>
+
+                <table id="expensesTable">
+                    <thead>
+                    <tr><th>Purpose</th><th>Amount (₹)</th><th>Date</th></tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </section>
+        <section id="updateInhand" class="section" style="display:none;">
+            <h3 class="content-title" style="font-size: 1.5rem; color:#222;">Update Monthly In-hand Amount</h3>
+            <div class="card">
+                <label class="form-group-label">New Monthly In-hand (₹)</label>
+                <input id="newInhand" type="number" placeholder="e.g., 35000" />
+                <div style="margin-top:20px;">
+                    <button class="primary" id="updateInhandBtn">Update In-hand</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="generateReport" class="section" style="display:none;">
+            <h3 class="content-title" style="font-size: 1.5rem; color:#222;">Expense Report Generation</h3>
+            <div class="card">
+                <p style="margin-bottom: 15px; color: #555;">Click below to download a professional PDF report summarizing your expenses and remaining balance.</p>
+                <button class="primary" id="generateReportBtn"><i class="fas fa-file-pdf"></i> Download Report (PDF)</button>
+            </div>
+        </section>
+
+    </main>
+</div>
+
+<footer>
+    <div class="footer-container">
+        <div class="footer-column">
+            <h3>SpendWise</h3>
+            <p>Your reliable companion for effortless financial management.</p>
+        </div>
+        <div class="footer-column">
+            <h3>Quick Links</h3>
+            <a href="signup.html">Sign Up</a>
+            <a href="login.html">Login</a>
+            <a href="report.html">Generate Report</a>
+        </div>
+        <div class="footer-column">
+            <h3>Contact</h3>
+            <p><i class="fas fa-envelope"></i> support@spendwise.com</p>
+            <p><i class="fas fa-map-marker-alt"></i> Kolkata, India</p>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        © 2025 SpendWise | Designed with 💚 by Somnath Sengupta
+    </div>
+</footer>
+
+<script>
+    /*************** CONFIG ***************/
+    const API_BASE = 'http://localhost:8084';
+
+    const loggedInUserJson = localStorage.getItem('loggedInUser');
+    let userId = null;
+    let userEmail = null;
+    let userName = null;
+
+    if (loggedInUserJson) {
+        try {
+            const loggedInUser = JSON.parse(loggedInUserJson);
+            userId = loggedInUser.id || loggedInUser.userId;
+            userEmail = loggedInUser.email;
+            userName = loggedInUser.fullName || loggedInUser.username;
+        } catch (e) {
+            console.error("Failed to parse loggedInUser from localStorage:", e);
+        }
+    }
+
+    // UI elements
+    const inhandBox = document.getElementById('inhandBox');
+    const messageDiv = document.getElementById('message');
+    const welcomeTitle = document.getElementById('welcomeTitle');
+    const userEmailEl = document.getElementById('userEmail');
+
+    // NEW: Filter UI elements
+    const monthFilter = document.getElementById('monthFilter');
+    const yearFilter = document.getElementById('yearFilter');
+    const applyFilterBtn = document.getElementById('applyFilterBtn');
+    const showAllBtn = document.getElementById('showAllBtn');
+
+
+    // navigation buttons
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const target = btn.getAttribute('data-section');
+        showSection(target, btn);
+      });
+    });
+
+    // Initial check: redirect if not logged in
+    if (!userId) {
+      alert('You are not logged in. Redirecting to login...');
+      window.location.replace('login.html');
+    }
+
+    // showSection util
+    function showSection(sectionId, btn = null) {
+      document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
+      const el = document.getElementById(sectionId);
+      if (el) el.style.display = 'block';
+
+      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+
+      // MODIFIED: Load expenses using the default filter (current month) when section is opened
+      if (sectionId === 'seeAll') {
+          loadExpenses('filtered');
+      }
+    }
+
+    // generic message helpers
+    function showMessage(type, text) {
+      messageDiv.className = '';
+      messageDiv.classList.add(type === 'success' ? 'success' : 'error');
+      messageDiv.textContent = text;
+      messageDiv.style.display = 'block';
+      setTimeout(() => { messageDiv.style.display = 'none'; }, 4000);
+    }
+
+    function showError(text) { showMessage('error', text); }
+    function showSuccess(text) { showMessage('success', text); }
+
+    /*************** API CALLS ***************/
+
+    async function loadUserAndBalance() {
+      if (!userId) return;
+      try {
+        const balResp = await fetch(`${API_BASE}/api/expenses/${userId}/balance`);
+        if (!balResp.ok) throw new Error('Failed to fetch balance');
+
+        const remainingText = await balResp.text();
+        const remaining = Number(remainingText);
+
+        inhandBox.textContent = `💰 In-hand: ₹${remaining.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+
+      } catch (err) {
+        console.error("Balance Error:", err);
+        inhandBox.textContent = `💰 In-hand: Error`;
+      }
+    }
+
+
+    async function loadExpenses(mode = 'filtered') {
+      if (!userId) return;
+
+      let endpoint = '';
+      if (mode === 'all') {
+        endpoint = `${API_BASE}/api/expenses/${userId}/all`;
+      } else {
+        const month = monthFilter.value;
+        const year = yearFilter.value;
+        endpoint = `${API_BASE}/api/expenses/${userId}/month?month=${month}&year=${year}`;
+      }
+
+      const tbody = document.querySelector('#expensesTable tbody');
+      tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:#666; padding: 30px;">Loading...</td></tr>';
+
+      try {
+        const resp = await fetch(endpoint);
+        if (!resp.ok) throw new Error('Failed to load expenses for the selected period');
+        const list = await resp.json();
+
+        tbody.innerHTML = '';
+        if (!Array.isArray(list) || list.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:#666; padding: 30px;">No expenses recorded for this period.</td></tr>';
+          return;
+        }
+
+        list.forEach(exp => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${escapeHtml(exp.purpose || '-')}</td>
+            <td>₹${Number(exp.amount).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+            <td>${formatDate(exp.date)}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+
+      } catch (err) {
+        console.error("Expenses Error:", err);
+        showError(err.message || 'Failed to load expenses.');
+        tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:var(--error-color); padding: 30px;">Error loading data.</td></tr>';
+      }
+    }
+
+
+    // ADD EXPENSE
+    document.getElementById('addExpenseBtn').addEventListener('click', async () => {
+      const purpose = document.getElementById('purpose').value.trim();
+      const amount = document.getElementById('amount').value;
+
+      if (!purpose || !amount) { showError('Purpose and amount are required'); return; }
+
+      const payload = {
+        purpose: purpose,
+        amount: Number(amount),
+      };
+
+      try {
+        const resp = await fetch(`${API_BASE}/api/expenses/${userId}/add`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        if (!resp.ok) {
+          const err = await resp.json().catch(() => ({}));
+          throw new Error(err.message || 'Failed to add expense');
+        }
+        showSuccess('Expense added successfully! Balance updated.');
+        document.getElementById('purpose').value = '';
+        document.getElementById('amount').value = '';
+
+        loadUserAndBalance();
+      } catch (err) {
+        console.error(err);
+        showError(err.message || 'Add expense failed. Check server/payload.');
+      }
+    });
+
+    document.getElementById('resetAdd').addEventListener('click', () => {
+      document.getElementById('purpose').value = '';
+      document.getElementById('amount').value = '';
+    });
+
+    // NEW: Event Listeners for new filter buttons
+    applyFilterBtn.addEventListener('click', () => loadExpenses('filtered'));
+    showAllBtn.addEventListener('click', () => loadExpenses('all'));
+
+
+    // UPDATE INHAND (Fixed: Reloads balance after successful update)
+    document.getElementById('updateInhandBtn').addEventListener('click', async () => {
+      const val = document.getElementById('newInhand').value;
+      if (!val || Number(val) < 0) { showError('Enter a valid amount'); return; }
+      try {
+        const resp = await fetch(`${API_BASE}/api/users/${userId}/update-salary?newMonthlyInHand=${Number(val)}`, {
+          method: 'PUT'
+        });
+        if (!resp.ok) {
+          const err = await resp.json().catch(() => ({}));
+          throw new Error(err.message || 'Update failed');
+        }
+        showSuccess('Monthly in-hand updated successfully!');
+        document.getElementById('newInhand').value = '';
+
+        loadUserAndBalance();
+      } catch (err) {
+        console.error(err);
+        showError(err.message || 'Update failed');
+      }
+    });
+
+    // GENERATE REPORT
+    document.getElementById('generateReportBtn').addEventListener('click', () => {
+      window.open(`${API_BASE}/api/users/${userId}/report`, '_blank');
+      showSuccess('Report generation requested. Check your downloads.');
+    });
+
+    // LOGOUT
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      localStorage.removeItem('loggedInUser');
+      window.location.replace('login.html');
+    });
+
+    // UTIL helpers
+    function formatDate(raw) {
+      if (!raw) return '-';
+      if (typeof raw === 'string' && raw.includes('T')) {
+          return raw.split('T')[0];
+      }
+      return raw;
+    }
+    function escapeHtml(text) {
+      if (!text) return '';
+      return String(text).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+    }
+
+    // NEW: Function to populate month and year dropdowns
+    function populateDateFilters() {
+      const now = new Date();
+      const currentMonth = now.getMonth() + 1; // getMonth() is 0-indexed
+      const currentYear = now.getFullYear();
+
+      const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+      // Populate months
+      months.forEach((monthName, index) => {
+          const option = document.createElement('option');
+          option.value = index + 1;
+          option.textContent = monthName;
+          if (index + 1 === currentMonth) {
+              option.selected = true;
+          }
+          monthFilter.appendChild(option);
+      });
+
+      // Populate years (e.g., last 5 years)
+      for (let i = 0; i < 5; i++) {
+          const year = currentYear - i;
+          const option = document.createElement('option');
+          option.value = year;
+          option.textContent = year;
+          if (year === currentYear) {
+              option.selected = true;
+          }
+          yearFilter.appendChild(option);
+      }
+    }
+
+    // initial load
+    (function init() {
+      if (!userId) return;
+
+      welcomeTitle.textContent = `Welcome — ${userName || 'User'}`;
+      userEmailEl.textContent = userEmail || '';
+
+      // NEW: Populate filters on page load
+      populateDateFilters();
+
+      loadUserAndBalance();
+    })();
+
+</script>
+</body>
+</html>

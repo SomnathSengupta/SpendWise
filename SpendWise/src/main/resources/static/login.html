@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SpendWise | Login - Access Your Account</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
+    <style>
+        :root {
+            --primary-color: #00796b;
+            --accent-color: #4db6ac;
+            --header-bg: #1b262c;
+            --light-bg: #f9fafb;
+            --white: #ffffff;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            --font: 'Poppins', 'Segoe UI', sans-serif;
+            --border-color: #e0e0e0;
+            --error-color: #dc3545;
+            --success-color: #28a745;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: var(--font);
+        }
+
+        body {
+            background: var(--light-bg);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            color: #333;
+        }
+
+        /* HEADER (COMMON) */
+        header {
+            background: var(--header-bg);
+            color: var(--white);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 70px;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        header h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        header nav a {
+            color: var(--accent-color);
+            margin-left: 30px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            padding: 5px 0;
+        }
+
+        header nav a:hover {
+            color: var(--white);
+        }
+
+        header nav a.primary-link {
+            color: var(--white);
+            background-color: var(--primary-color);
+            padding: 8px 15px;
+            border-radius: 5px;
+            /* Ensure primary-link margin is correct */
+            margin-left: 30px;
+        }
+
+        header nav a.primary-link:hover {
+             background-color: #00695c;
+             color: var(--white);
+        }
+
+        /* LOGIN FORM STYLES */
+        .login-container {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        .form-card {
+            background: var(--white);
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+        }
+
+        .form-card h2 {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .form-group input:focus {
+            border-color: var(--accent-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(77, 182, 172, 0.2);
+        }
+
+        .form-submit-btn {
+            width: 100%;
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: none;
+            padding: 15px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            text-transform: uppercase;
+            margin-top: 10px;
+        }
+
+        .form-submit-btn:hover {
+            background-color: #005a50;
+            transform: translateY(-1px);
+        }
+
+        .signup-link-container {
+            margin-top: 25px;
+            font-size: 0.95rem;
+            color: #555;
+        }
+
+        .signup-link-container a {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        #form-message {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+            font-weight: 600;
+            text-align: left;
+        }
+
+        .message-success {
+            background-color: #d4edda;
+            color: var(--success-color);
+            border: 1px solid var(--success-color);
+        }
+
+        .message-error {
+            background-color: #f8d7da;
+            color: var(--error-color);
+            border: 1px solid var(--error-color);
+        }
+
+        /* FOOTER (COMMON) */
+        footer {
+            margin-top: auto;
+            background: linear-gradient(to right, #263238, #1b262c);
+            color: #cfd8dc;
+            padding: 60px 0 20px;
+        }
+
+        .footer-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 40px;
+            padding: 0 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            padding-bottom: 30px;
+        }
+
+        .footer-column h3 {
+            color: var(--accent-color);
+            margin-bottom: 15px;
+        }
+
+        .footer-column a {
+            display: block;
+            color: #b0bec5;
+            text-decoration: none;
+            margin-bottom: 8px;
+            transition: 0.3s;
+        }
+
+        .footer-column a:hover {
+            color: var(--accent-color);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 15px;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            header { padding: 18px 20px; }
+            header h1 { font-size: 1.5rem; }
+            header nav { display: none; }
+
+            .form-card {
+                padding: 30px 20px;
+            }
+
+            .footer-container {
+                flex-direction: column;
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1>SpendWise <i class="fas fa-coins"></i></h1>
+    <nav>
+        <a href="index.html" class="primary-link">Home</a>
+        <a href="index.html#features-section">Features</a>
+        <a href="index.html#workflow-section">Workflow</a>
+    </nav>
+</header>
+
+<main class="login-container">
+    <div class="form-card">
+        <h2>Login to Your Account</h2>
+        <form id="login-form">
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" placeholder="example@domain.com" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter your password" required minlength="8">
+            </div>
+
+            <button type="submit" class="form-submit-btn" id="submit-button">
+                Login & Continue
+            </button>
+        </form>
+
+        <div id="form-message" class="message-error" role="alert"></div>
+
+        <div class="signup-link-container">
+            Don’t have an account? <a href="signup.html">Sign Up</a>
+        </div>
+    </div>
+</main>
+
+<footer>
+    <div class="footer-container">
+        <div class="footer-column">
+            <h3>SpendWise</h3>
+            <p>Your reliable companion for effortless financial management.</p>
+        </div>
+        <div class="footer-column">
+            <h3>Quick Links</h3>
+            <a href="signup.html">Sign Up</a>
+            <a href="login.html">Login</a>
+            <a href="report.html">Generate Report</a>
+        </div>
+        <div class="footer-column">
+            <h3>Contact</h3>
+            <p><i class="fas fa-envelope"></i> support@spendwise.com</p>
+            <p><i class="fas fa-map-marker-alt"></i> Kolkata, India</p>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        © 2025 SpendWise | Designed with 💚 by Somnath Sengupta
+    </div>
+</footer>
+
+<script>
+    const form = document.getElementById('login-form');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const messageDiv = document.getElementById('form-message');
+    const submitButton = document.getElementById('submit-button');
+
+    // Function to display messages
+    function showMessage(type, message) {
+        messageDiv.textContent = message;
+        messageDiv.className = type === 'success' ? 'message-success' : 'message-error';
+        messageDiv.style.display = 'block';
+    }
+
+    // Function to handle form state
+    function toggleFormDisabled(disabled) {
+        submitButton.disabled = disabled;
+        submitButton.textContent = disabled ? 'Processing...' : 'Login & Continue';
+    }
+
+    // Form submission handler
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        messageDiv.style.display = 'none';
+
+        toggleFormDisabled(true);
+
+        const loginData = {
+            email: emailInput.value,
+            password: passwordInput.value
+        };
+
+        try {
+            // CRITICAL FIX: Changed port from 8084 to 8080 (assuming this is the correct Spring Boot port)
+            const response = await fetch('http://localhost:8084/api/users/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(loginData),
+            });
+
+            if (response.ok) {
+                // Login successful (HTTP 200)
+                const result = await response.json();
+
+                // Save user data (e.g., token, user details) to local storage
+                // Use the returned JSON data directly
+                localStorage.setItem("loggedInUser", JSON.stringify(result));
+
+                showMessage('success', 'Login successful! Redirecting...');
+
+                // Redirect to the dashboard page
+                setTimeout(() => {
+                    // Use window.location.replace to prevent back-button navigation to the login form
+                    window.location.replace('dashboard.html');
+                }, 1500);
+
+            } else {
+                // Login failed (HTTP 4xx or 5xx)
+                const error = await response.json();
+                // Prioritize the error message from the backend if available
+                const errorMessage = error.message || 'Invalid email or password. Please try again.';
+                showMessage('error', errorMessage);
+            }
+
+        } catch (error) {
+            // Network error (server not running, CORS issue, etc.)
+            console.error('Network Error:', error);
+            showMessage('error', 'Connection failed. Ensure the backend server is running on port 8080.');
+        } finally {
+            toggleFormDisabled(false);
+        }
+    });
+</script>
+</body>
+</html>

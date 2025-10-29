@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SpendWise | Sign Up - Create Your Account</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
+    <style>
+        :root {
+            --primary-color: #00796b; /* Deep Teal */
+            --accent-color: #4db6ac; /* Light Teal Accent */
+            --header-bg: #1b262c; /* Dark Slate Header */
+            --light-bg: #f9fafb; /* Off-White Background */
+            --white: #ffffff;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            --font: 'Poppins', 'Segoe UI', sans-serif;
+            --border-color: #e0e0e0;
+            --error-color: #dc3545; /* Red for errors/alerts */
+            --success-color: #28a745; /* Green for success */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: var(--font);
+        }
+
+        body {
+            background: var(--light-bg);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            color: #333;
+        }
+
+        /* HEADER */
+        header {
+            background: var(--header-bg);
+            color: var(--white);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 70px;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        header h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        header nav a {
+            color: var(--accent-color);
+            margin-left: 30px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            padding: 5px 0;
+        }
+
+        header nav a:hover {
+            color: var(--white);
+        }
+
+        /* Highlighted Links */
+        header nav a.primary-link {
+            color: var(--white);
+            background-color: var(--primary-color);
+            padding: 8px 15px;
+            border-radius: 5px;
+            margin-left: 30px;
+        }
+
+        header nav a.primary-link:hover {
+            background-color: #00695c;
+            color: var(--white);
+        }
+
+        .signup-container {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        .form-card {
+            background: var(--white);
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+        }
+
+        .form-card h2 {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark-text, #333);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .form-group input:focus {
+            border-color: var(--accent-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(77, 182, 172, 0.2);
+        }
+
+        .form-submit-btn {
+            width: 100%;
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: none;
+            padding: 15px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            text-transform: uppercase;
+            margin-top: 10px;
+        }
+
+        .form-submit-btn:hover {
+            background-color: #005a50;
+            transform: translateY(-1px);
+        }
+
+        .login-link-container {
+            margin-top: 25px;
+            font-size: 0.95rem;
+            color: #555;
+        }
+
+        .login-link-container a {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        /* Message area for API responses */
+        #form-message {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            display: none; /* Hidden by default */
+            font-weight: 600;
+        }
+
+        .message-success {
+            background-color: #d4edda;
+            color: var(--success-color);
+            border: 1px solid var(--success-color);
+        }
+
+        .message-error {
+            background-color: #f8d7da;
+            color: var(--error-color);
+            border: 1px solid var(--error-color);
+        }
+
+        /* Password visibility icon styling */
+        .input-with-icon {
+            position: relative;
+        }
+
+        .input-with-icon i {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+            cursor: pointer;
+        }
+
+
+        /* FOOTER */
+        footer {
+            margin-top: auto;
+            background: linear-gradient(to right, #263238, #1b262c);
+            color: #cfd8dc;
+            padding: 60px 0 20px;
+        }
+
+        .footer-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 40px;
+            padding: 0 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            padding-bottom: 30px;
+        }
+
+        .footer-column h3 {
+            color: var(--accent-color);
+            margin-bottom: 15px;
+        }
+
+        .footer-column a {
+            display: block;
+            color: #b0bec5;
+            text-decoration: none;
+            margin-bottom: 8px;
+            transition: 0.3s;
+        }
+
+        .footer-column a:hover {
+            color: var(--accent-color);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 15px;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            header { padding: 18px 20px; }
+            header h1 { font-size: 1.5rem; }
+            header nav { display: none; }
+
+            .form-card {
+                padding: 30px 20px;
+            }
+
+            .footer-container {
+                flex-direction: column;
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1>SpendWise <i class="fas fa-coins"></i></h1>
+    <nav>
+        <a href="index.html" class="primary-link">Home</a>
+        <a href="index.html#features-section">Features</a>
+        <a href="index.html#workflow-section">Workflow</a>
+    </nav>
+</header>
+
+<main class="signup-container">
+    <div class="form-card">
+        <h2>Create Your SpendWise Account</h2>
+        <form id="signup-form">
+
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" name="name" placeholder="Enter your full name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" placeholder="example@domain.com" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <div class="input-with-icon">
+                    <input type="password" id="password" name="password" placeholder="Minimum 8 characters" required minlength="8">
+                    <i class="fas fa-eye-slash" id="togglePassword"></i>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="confirm-password">Confirm Password</label>
+                <input type="password" id="confirm-password" name="confirm-password" required minlength="8">
+            </div>
+
+            <button type="submit" class="form-submit-btn" id="submit-button">
+                Sign Up & Start Tracking
+            </button>
+        </form>
+
+        <div id="form-message" class="message-error" role="alert"></div>
+
+        <div class="login-link-container">
+            Already have an account? <a href="login.html">Login Here</a>
+        </div>
+    </div>
+</main>
+
+<footer>
+    <div class="footer-container">
+        <div class="footer-column">
+            <h3>SpendWise</h3>
+            <p>Your reliable companion for effortless financial management.</p>
+        </div>
+        <div class="footer-column">
+            <h3>Quick Links</h3>
+            <a href="signup.html">Sign Up</a>
+            <a href="login.html">Login</a>
+            <a href="report.html">Generate Report</a>
+        </div>
+        <div class="footer-column">
+            <h3>Contact</h3>
+            <p><i class="fas fa-envelope"></i> support@spendwise.com</p>
+            <p><i class="fas fa-map-marker-alt"></i> Kolkata, India</p>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        © 2025 SpendWise | Designed with 💚 by Somnath Sengupta
+    </div>
+</footer>
+
+<script>
+    const form = document.getElementById('signup-form');
+    const nameInput = document.getElementById('name');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const confirmPasswordInput = document.getElementById('confirm-password');
+    const messageDiv = document.getElementById('form-message');
+    const submitButton = document.getElementById('submit-button');
+    const togglePassword = document.getElementById('togglePassword');
+
+    // API configuration
+    const API_BASE = 'http://localhost:8084'; // Explicitly set to port 8084
+
+    // --- Utility Functions ---
+
+    function showMessage(type, message) {
+        messageDiv.textContent = message;
+        messageDiv.className = type === 'success' ? 'message-success' : 'message-error';
+        messageDiv.style.display = 'block';
+    }
+
+    function toggleFormDisabled(disabled) {
+        submitButton.disabled = disabled;
+        submitButton.textContent = disabled ? 'Processing...' : 'Sign Up & Start Tracking';
+    }
+
+    // --- Password Visibility Toggle ---
+    if (togglePassword) {
+        togglePassword.addEventListener('click', function (e) {
+            const isPassword = passwordInput.getAttribute('type') === 'password';
+            passwordInput.setAttribute('type', isPassword ? 'text' : 'password');
+            this.classList.toggle('fa-eye');
+            this.classList.toggle('fa-eye-slash');
+        });
+    }
+
+    // --- Form Submission Logic ---
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        messageDiv.style.display = 'none'; // Hide previous messages
+
+        // 1. Client-side Validation
+        if (passwordInput.value !== confirmPasswordInput.value) {
+            showMessage('error', 'Error: Passwords do not match.');
+            confirmPasswordInput.focus();
+            return;
+        }
+
+        if (passwordInput.value.length < 8) {
+            showMessage('error', 'Error: Password must be at least 8 characters long.');
+            passwordInput.focus();
+            return;
+        }
+
+        toggleFormDisabled(true); // Disable form while processing
+
+        const userData = {
+            username: nameInput.value,
+            email: emailInput.value,
+            password: passwordInput.value,
+            monthlyInHand: 0 // Default value for new users
+        };
+
+        try {
+            // 2. API Call to Signup Endpoint (Port 8084)
+            const response = await fetch(`${API_BASE}/api/users/signup`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(userData),
+            });
+
+            // 3. Handle Response
+            if (response.ok) {
+                // HTTP 200-299 status code
+                const result = await response.json();
+
+                // Store user data in localStorage for the dashboard to use
+                localStorage.setItem('loggedInUser', JSON.stringify(result));
+
+                showMessage('success', 'Registration successful! Redirecting to dashboard...');
+
+                // Clear the form fields
+                form.reset();
+
+                // Redirect to the dashboard page after a short delay
+                setTimeout(() => {
+                    // Use window.location.replace for a cleaner navigation history
+                    window.location.replace('dashboard.html');
+                }, 1500); // 1.5 seconds delay
+
+            } else {
+                // HTTP error status (4xx or 5xx)
+                const error = await response.json().catch(() => ({}));
+
+                const errorMessage = error.message || 'Registration failed. The email might already be in use.';
+                showMessage('error', errorMessage);
+            }
+
+        } catch (error) {
+            // Network error (e.g., backend server is down, CORS issue)
+            console.error('Network Error:', error);
+            showMessage('error', 'Connection failed. Ensure the backend server is running on port 8084.');
+
+        } finally {
+            toggleFormDisabled(false); // Re-enable form
+        }
+    });
+</script>
+</body>
+</html>
